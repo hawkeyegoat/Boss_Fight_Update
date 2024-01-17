@@ -7,35 +7,71 @@ import java.util.Scanner;
 
 public class Player {
 
-    static Random rand = new Random();
-    static Scanner s = new Scanner(System.in);
+    private Random rand = new Random();
+    private Scanner s = new Scanner(System.in);
 
-    static String name;
+    private String myName;
 
-    static int HP = 100; //added the hp, which is base 100.
-    static int role;
-    static String Role;
-    static int strength;
-    static int vitality;
-    static int dexterity;
-    static int inteligence;
+    private int myHP = 100; //added the hp, which is base 100.
+    private int myRole;
+    private String myRoleS;
+    private int myStrength;
+    private int myVitality;
+    private int myDexterity;
+    private int myInteligence;
 
-    static int XP = 0;
-    static int level = 5;
+    private int myXP = 0;
+    private int myLevel = 5;
+    private int myStoredPotions = 0;
+    private boolean isActive = true;
+    private Weapon myCurrentWeapon;
+    //public static String currentWeaponName;
 
-    public static Weapon currentWeapon;
-    public static String currentWeaponName;
+    private int myCurrentHP; //added current hp, which is vitality times base HP
 
-    public static int currentHP; //added current hp, which is vitality times base HP
+    public Player() {
+        this.declareName();
+        this.declareClass();
+        this.generateStats();
+        this.printStats();
+    }
 
-    public static void declareName() {
+    /**
+     * Constructor to be used by the GUI
+     * @param theName   The players name passed in
+     * @param theRole   The Players role passed in
+     */
+    public Player(String theName, int theRole) {
+        myName = theName;
+        myRole = theRole;
+        this.generateStats();
+    }
+    public int getCurrentHP() {
+        return myCurrentHP;
+    }
+    public void setCurrentHP(int hurt) {
+        myCurrentHP = hurt;
+    }
+    public boolean isTurn() {
+        return isActive;
+    }
+    public void setTurn(boolean turn) {
+        isActive = turn;
+    }
+    public void setWeapon(Weapon temp) {
+        myCurrentWeapon = temp;
+    }
+    public void declareName() {
+        //Scanner s = new Scanner(System.in);
         System.out.println("Greetings noble adventurer! May I ask your name?");
-        name = s.next();
+        myName = s.next();
+        //s.close();
         System.out.println();
     }
 
-    public static void declareClass() {
-        System.out.println(name + ", is it? Well, tell me about yourself.");
+    public void declareClass() {
+        Scanner s = new Scanner(System.in);
+        System.out.println(myName + ", is it? Well, tell me about yourself.");
         System.out.println();
         System.out.println("Please select a class:");
         System.out.println();
@@ -43,8 +79,8 @@ public class Player {
         System.out.println("Enter (2) for mage");
         System.out.println("Enter (3) for knight");
 
-        role = s.nextInt();
-        while (role <= 0 || role > 3) {
+        myRole = s.nextInt();
+        while (myRole <= 0 || myRole > 3) {
             System.out.println();
             System.out.println("Oh! It seems you've entered an invalid option. Please try again.");
             System.out.println();
@@ -53,121 +89,124 @@ public class Player {
             System.out.println("Enter (1) for warrior");
             System.out.println("Enter (2) for mage");
             System.out.println("Enter (3) for knight");
-            role = s.nextInt();
+            myRole = s.nextInt();
         }
 
-        if (role == 1) {
-            Role = "warrior";
+        if (myRole == 1) {
+            myRoleS = "warrior";
         }
 
-        if (role == 2) {
-            Role = "mage";
+        if (myRole == 2) {
+            myRoleS = "mage";
         }
 
-        if (role == 3) {
-            Role = "knight";
+        if (myRole == 3) {
+            myRoleS = "knight";
         }
 
-        System.out.println("Ah, a " + Role + " are you? Well take heed, as your journey is about to begin.");
+        System.out.println("Ah, a " + myRoleS + " are you? Well take heed, as your journey is about to begin.");
+        //s.close();
     }
 
-    public static void generateStats() {
-        if (Role == "warrior") {
-            strength = rand.nextInt(5);
-            strength += 12;
+    public void generateStats() {
+        if (myRole == 1) {
+            myStrength = rand.nextInt(5);
+            myStrength += 12;
 
-            vitality = rand.nextInt(5);
-            vitality += 12;
-            currentHP = HP * vitality; //gathering starting HP for each of the classes, which
+            myVitality = rand.nextInt(5);
+            myVitality += 12;
+            myCurrentHP = myHP * myVitality; //gathering starting HP for each of the classes, which
 
-            dexterity = rand.nextInt(5);
-            dexterity += 12;
+            myDexterity = rand.nextInt(5);
+            myDexterity += 12;
 
-            inteligence = rand.nextInt(5);
-            inteligence += 0;
+            myInteligence = rand.nextInt(5);
+            myInteligence += 0;
 
-            currentWeapon = Weapon.shortSword;
+            myCurrentWeapon = Weapon.shortSword; //ew Weapon.ShortSword();
         }
 
-        else if (Role == "mage") {
-            strength = rand.nextInt(5);
-            strength += 5;
+        else if (myRole == 2) {
+            myStrength = rand.nextInt(5);
+            myStrength += 5;
 
-            vitality = rand.nextInt(5);
-            vitality += 15;
-            currentHP = HP * vitality;
+            myVitality = rand.nextInt(5);
+            myVitality += 15;
+            myCurrentHP = myHP * myVitality;
 
-            dexterity = rand.nextInt(5);
-            dexterity += 8;
+            myDexterity = rand.nextInt(5);
+            myDexterity += 8;
 
-            inteligence = rand.nextInt(5);
-            inteligence += 12;
+            myInteligence = rand.nextInt(5);
+            myInteligence += 12;
 
-            currentWeapon = Weapon.staff;
+            myCurrentWeapon = Weapon.staff;
         }
 
         else {
-            strength = rand.nextInt(5);
-            strength += 15;
+            myStrength = rand.nextInt(5);
+            myStrength += 15;
 
-            vitality = rand.nextInt(5);
-            vitality += 10;
-            currentHP = HP * vitality;
+            myVitality = rand.nextInt(5);
+            myVitality += 10;
+            myCurrentHP = myHP * myVitality;
 
-            dexterity = rand.nextInt(5);
-            dexterity += 12;
+            myDexterity = rand.nextInt(5);
+            myDexterity += 12;
 
-            inteligence = rand.nextInt(5);
-            inteligence += 5;
+            myInteligence = rand.nextInt(5);
+            myInteligence += 5;
 
-            currentWeapon = Weapon.longSword;
+            myCurrentWeapon = Weapon.longSword;
         }
     }
 
-    public static void printStats() {
+    public void printStats() {
         System.out.println();
         System.out.println("Current Stats:");
-        System.out.println("Vitality: " + vitality);
-        System.out.println("Strength: " + strength);
-        System.out.println("Dexterity: " + dexterity);
-        System.out.println("Inteligence: " + inteligence);
-        System.out.println("Current HP: " + currentHP);
-        System.out.println("Current XP; " + XP);
-        System.out.println("Current Potions: " + Weapon.storedPotions);
-        System.out.println("Current Weapon: " + currentWeapon.toString()); //prints current
+        System.out.println("Vitality: " + myVitality);
+        System.out.println("Strength: " + myStrength);
+        System.out.println("Dexterity: " + myDexterity);
+        System.out.println("Inteligence: " + myInteligence);
+        System.out.println("Current HP: " + myCurrentHP);
+        System.out.println("Current XP; " + myXP);
+        System.out.println("Current Potions: " + myStoredPotions);
+        System.out.println("Current Weapon: " + myCurrentWeapon.toString()); //prints current
         System.out.println();
     }
+    //move to main
+//    public boolean battleWon() {
+//
+//        if (Boss.BossMaxHealth <= 0) {
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
+//
+//    }
 
-    public static boolean battleWon() {
-
-        if (Boss.BossMaxHealth <= 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-
-    }
-
-    public static void levelUp() {
+    //change
+    public void levelUp() {
 
         int selection = 0;
+        //just change to only call when battle is won inside main
+        //if (battleWon() == true) {
+            myXP += 40;
+            if (myXP < 100) {
 
-        if (battleWon() == true) {
-            XP += 40;
-            if (XP < 100) {
-
-                System.out.println("Congratulations, " + name + "! You've gained some XP from your previous battle!");
-                System.out.println("Current XP: " + XP);
-                System.out.println("You are now " + (100 - XP) + " XP points away from the next level!");
+                System.out.println("Congratulations, " + myName + "! You've gained some XP from your previous battle!");
+                System.out.println("Current XP: " + myXP);
+                System.out.println("You are now " + (100 - myXP) + " XP points away from the next level!");
                 System.out.println();
-            } else {
-                level += 1;
-                XP -= 100;
+            }
+            else {
+                myLevel += 1;
+                myXP -= 100;
 
-                System.out.println("Congratulations, " + name + "! You've gained some XP from your previous battle!");
-                System.out.println("You've gained enough XP to advance to level " + level + "!");
-                System.out.println("Current XP: " + XP);
+                System.out.println("Congratulations, " + myName + "! You've gained some XP from your previous battle!");
+                System.out.println("You've gained enough XP to advance to level " + myLevel + "!");
+                System.out.println("Current XP: " + myXP);
                 System.out.println();
                 System.out.println("Since you've leveled up, you've earned 1 attribute point! Please select the attribute you'd like to increase:");
                 System.out.println();
@@ -187,21 +226,127 @@ public class Player {
                     selection = s.nextInt();
                 }
                 if (selection == 1) {
-                    vitality++;
+                    myVitality++;
 
                 } else if (selection == 2) {
-                    strength++;
+                    myStrength++;
 
                 } else if (selection == 3) {
-                    dexterity++;
+                    myDexterity++;
 
                 } else {
-                    inteligence++;
+                    myInteligence++;
                 }
-
-                printStats();
+                this.printStats();
             }
+        //}
+    }
+    //GOING TO HAVE TO DO A LOT AFTER OVERHAULING BOSS
+    // Moving to main
+//    public int turn(int max, int bossAttack) {
+//        Scanner sc = new Scanner(System.in);
+//        while (true) {
+//            if (this.isActive) {
+//                playerturn(2);
+//            } else {
+//                bossAttack = Boss.Damage;
+//                System.out.println(Boss.BossName + " attacked for " + bossAttack + " damage!");
+//                myCurrentHP -= bossAttack;
+//                System.out.println("Your health is now: " + myCurrentHP);
+//                System.out.println("The bosses Health is: " + Boss.BossMaxHealth);
+//                System.out.println();
+//            }
+//            if (isActive) {
+//                isActive = false;
+//            } else {
+//                isActive = true;
+//            }
+//            if (myCurrentHP <= 0) {
+//
+//                break;
+//            }
+//            if (Boss.BossMaxHealth <= 0) {
+//                System.out.println("You have defeated the boss");
+//                this.levelUp();
+//                //System.out.println(Bosses.WeaponName + " has dropped. Would you like to take it.");
+//                System.out.println("(3) for Yes");
+//                System.out.println("(4) for No");
+//                String temp = sc.next();
+//                int choice = Integer.parseInt(temp);
+//                if (choice == 3) {
+//                    myCurrentWeapon = Boss.weaponHeld;
+//                    sc.nextLine();
+//                    this.printStats();
+//                    choice = 0;
+//                    break;
+//                } else {
+//                    break;
+//                }
+//            }
+//            if (myCurrentHP <= 0) {
+//                System.out.println("You have died.");
+//                System.exit(0);
+//            }
+//        }
+//        return myCurrentHP;
+//    }
+
+    //used for text based
+    public int playerturn (int max) {
+        max = 2;
+        Scanner scan = new Scanner(System.in);
+        int totalDMG = 0;
+        while (true) {
+            System.out.println(myName + " It's your turn.");
+            System.out.println("Would you like to attack (1)");
+            System.out.println("or would you like to drink a potion (2)");
+            String temp = scan.next();
+            int choice = Integer.parseInt(temp);
+            if (choice >= 1 && choice <= max) {
+                setTurn(false);
+                if ((choice == 1)) {
+                    int x = myCurrentWeapon.getDamage();
+
+                    totalDMG = x * (myCurrentWeapon.getMySTRScaling() + myCurrentWeapon.getMyDEXScaling() + myCurrentWeapon.getMyINTScaling()) + (myStrength * myCurrentWeapon.getMySTRScaling())
+                            + (myDexterity * myCurrentWeapon.getMyDEXScaling()) + (myInteligence * myCurrentWeapon.getMyINTScaling());
+                    return totalDMG; //Going to do hurting in main likely
+                }else {
+                    //return usePotion();
+                }
+            }
+            else {
+                System.out.println("That is not a valid #. Please try again.");
+                scan.nextLine();
+            }
+            return totalDMG;
+            //continue;
         }
 
+    }
+    //used for GUI, pass totalDMG into set currentBossHealth(currentHealth - totalDMG
+    public int playerAttack() {
+        int totalDMG = 0;
+        setTurn(false);
+
+        int x = myCurrentWeapon.getDamage();
+
+        totalDMG = x * (myCurrentWeapon.getMySTRScaling() + myCurrentWeapon.getMyDEXScaling() + myCurrentWeapon.getMyINTScaling()) + (myStrength * myCurrentWeapon.getMySTRScaling())
+                            + (myDexterity * myCurrentWeapon.getMyDEXScaling()) + (myInteligence * myCurrentWeapon.getMyINTScaling());
+        return totalDMG; //Going to do hurting in main likely
+    }
+    //for GUI Make sure to check for total potions with getPotions, or check if this returns 0, then throw out of potions box
+    public int usePotion() {
+        if(myStoredPotions == 0) {
+            //System.out.println("You do not have any potions to drink");
+            return 0;
+        }
+        else {
+            setTurn(false);
+            myCurrentHP = 100 * myVitality;
+            myStoredPotions -= 1;
+            //System.out.println("All wounds have been healed");
+            //System.out.println();
+            return myCurrentHP;
+        }
     }
 }
