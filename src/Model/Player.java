@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ public class Player {
     private Scanner s = new Scanner(System.in);
 
     private String myName;
+    private ArrayList<Weapon> weaponInventory;
 
     private int myHP = 100; //added the hp, which is base 100.
     private int myRole;
@@ -30,6 +32,7 @@ public class Player {
     private int myCurrentHP; //added current hp, which is vitality times base HP
 
     public Player() {
+        weaponInventory = new ArrayList<Weapon>();
         this.declareName();
         this.declareClass();
         this.generateStats();
@@ -42,9 +45,57 @@ public class Player {
      * @param theRole   The Players role passed in
      */
     public Player(String theName, int theRole) {
+        weaponInventory = new ArrayList<Weapon>();
         myName = theName;
         myRole = theRole;
+        if (myRole == 1) {
+            weaponInventory.add(Weapon.shortSword);
+        }
+        if (myRole == 2) {
+            weaponInventory.add(Weapon.staff);
+        }
+        if (myRole == 3) {
+            weaponInventory.add(Weapon.longSword);
+        }
         this.generateStats();
+
+    }
+    public int numberOfWeaponsStored() {
+        return weaponInventory.size();
+    }
+    public int updateStrength(int theStrength) {
+        myStrength += theStrength;
+        return myStrength;
+    }
+    public int updateDex(int theDex) {
+        myDexterity += theDex;
+        return myDexterity;
+    }
+    public int updateIntel(int theInt) {
+        myInteligence += theInt;
+        return myInteligence;
+    }
+    public int getMaxHP() {
+        return myHP * myVitality;
+    }
+    public int getXP() {
+        return myXP;
+    }
+    public void storeWeapon(Weapon theWeapon) {
+        weaponInventory.add(theWeapon);
+    }
+    public boolean checkWeaponRequirementsMet(Weapon theWeapon) {
+        if (myStrength >= theWeapon.getMyRequiredSTR() && myDexterity >= theWeapon.getMyRequiredDEX()
+                && myInteligence >= theWeapon.getMyRequiredINT()) {
+            return true;
+        }
+        else
+        {
+        return false;
+        }
+    }
+    public Weapon getWeaponAtIndex(int i) {
+        return weaponInventory.get(i);
     }
     public int getCurrentHP() {
         return myCurrentHP;
@@ -187,6 +238,7 @@ public class Player {
 //    }
 
     //change
+    //used for terminal, use isLevelUp() For GUI
     public void levelUp() {
 
         int selection = 0;
@@ -240,6 +292,20 @@ public class Player {
                 this.printStats();
             }
         //}
+    }
+    public boolean isLevelUp() {
+
+
+        //just change to only call when battle is won inside main
+        //if (battleWon() == true) {
+        myXP += 40;
+        if (myXP < 100) {
+            return false;
+        } else {
+            myLevel += 1;
+            myXP -= 100;
+            return true;
+        }
     }
     //GOING TO HAVE TO DO A LOT AFTER OVERHAULING BOSS
     // Moving to main

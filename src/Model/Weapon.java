@@ -1,6 +1,7 @@
 package Model;
 
 public class Weapon {
+    public static final int DROP_CHANCE = 3;
     private String myName;
     private boolean myCanCast; //if the weapon can cast spells
 
@@ -34,6 +35,15 @@ public class Weapon {
         mySTRScaling = theSTRScaling;
         myINTScaling = theINTScaling;
         myBaseDMG = theBaseDMG;
+    }
+    public int getMyRequiredSTR(){
+        return myRequiredSTR;
+    }
+    public int getMyRequiredDEX() {
+        return myRequiredDEX;
+    }
+    public int getMyRequiredINT() {
+        return myRequiredINT;
     }
     public String getName() {
         return myName;
