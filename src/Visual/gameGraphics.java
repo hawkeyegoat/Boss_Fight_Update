@@ -17,6 +17,8 @@ import static Controller.Main.bossSelected;
 // FIX POP IN BY MAKING PREVIOUS WINDOW VISIBLE BEFORE OTHER DISPOSES
 
 // ADD SEE CURRENT STATS BUTTON, POSSIBILY ALSO INTEGRATE WITH LEVEL UP, MAYBE TEXT FIELD PRIOR TO BUTTON
+
+// NEED TO FIGURE OUT HOW TO SCALE GRAPHICS BY SIZE
 public class gameGraphics {
     /**
      * Constructor to build start menu
@@ -28,17 +30,17 @@ public class gameGraphics {
     Player mc;
     Boss currentBoss;
     static JButton EXIT = new JButton("EXIT");
+    final static JFrame GAME_FRAME = new JFrame("Boss Fight");
 
     public gameGraphics() {
-        startFrame = new JFrame("Boss fight");
+
+        startFrame = new JFrame();
         JLabel text = new JLabel("<html><p>Hello adventour, welcome on your journey!<br/>Please, what is your name?</html>", SwingConstants.CENTER);
 
-        // Creating instance of JButton
         JTextField nameField = new JTextField();
 
-        // x axis, y axis, width, height
         nameField.setBounds(150, 300, 220, 50);
-        //nameField.addActionListener(e -> playerName = nameField.getText());
+
         nameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 playerName = nameField.getText();
@@ -62,13 +64,9 @@ public class gameGraphics {
 
         startFrame.add(text);
 
-        // 400 width and 500 height
-        //startFrame.setSize(500, 600);
-
         // using no layout managers
         startFrame.setLayout(null);
 
-        // making the startFrame visible
         startFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         startFrame.setUndecorated(true);
         startFrame.setVisible(true);
@@ -76,26 +74,11 @@ public class gameGraphics {
     }
 
     public void selectRole() {
-        startFrame.setVisible(false);
         JFrame roleFrame = new JFrame("Boss fight");
-        //startFrame.setVisible(false);
+        startFrame.setVisible(false);
         startFrame.dispose();
-        //was used for text based, using buttons now
-        //JLabel text = new JLabel("<html>Please enter your role:<br/>1:warrior<br/>2: Mage<br/>3: knight");
         JLabel roleText = new JLabel("Please select your role " + playerName);
         roleText.setBounds(50, 200, 500, 50);
-        // using buttons instead of text field
-//        JTextField roleField = new JTextField("Please enter your Role");
-//
-//        // x axis, y axis, width, height
-//        roleField.setBounds(150, 300, 220, 50);
-//        //nameField.addActionListener(e -> playerName = nameField.getText());
-//        roleField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(ActionEvent event) {
-//                playerRole = roleField.getText();
-//                Player mainPlayer = new Player(playerName, playerRole);
-//            }
-//        });
         JButton warriorButton = new JButton("warrior");
         warriorButton.setBounds(50, 300, 200, 50);
         warriorButton.addActionListener(new java.awt.event.ActionListener() {
@@ -104,7 +87,6 @@ public class gameGraphics {
                 playerRole = "warrior";
                 mc = new Player(playerName, playerRoleNum);
                 roleFrame.setVisible(false);
-                //selectRole();
                 battleMode();
             }
         });
@@ -142,18 +124,13 @@ public class gameGraphics {
                 System.exit(0);
             }
         });
-        //text.setBounds(50, 200, 500, 50);
 
-        // adding button in JFrame
-        //roleFrame.add(roleField);
         roleFrame.add(roleText);
 
         roleFrame.add(warriorButton);
         roleFrame.add(mageButton);
         roleFrame.add(knightButton);
 
-        //roleFrame.add(roleText);
-        // 400 width and 500 height
         roleFrame.setSize(500, 600);
 
         // using no layout managers
@@ -176,8 +153,6 @@ public class gameGraphics {
         }
         bossFrame = new JFrame("Boss fight");
         currentBoss = bossSelected();
-        //was used for text based, using buttons now
-        //JLabel text = new JLabel("<html>Please enter your role:<br/>1:warrior<br/>2: Mage<br/>3: knight");
         JLabel currentBossText = new JLabel("<html>Current Boss " + currentBoss.getBossName() + "<br/>Current HP: " + currentBoss.getBossCurrentHP() + "<html>");
         currentBossText.setBounds(50, 200, 500, 50);
 
@@ -192,19 +167,6 @@ public class gameGraphics {
                 System.exit(0);
             }
         });
-        //bossFrame.setBounds(50, 200, 500, 50);
-        // using buttons instead of text field
-//        JTextField roleField = new JTextField("Please enter your Role");
-//
-//        // x axis, y axis, width, height
-//        roleField.setBounds(150, 300, 220, 50);
-//        //nameField.addActionListener(e -> playerName = nameField.getText());
-//        roleField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(ActionEvent event) {
-//                playerRole = roleField.getText();
-//                Player mainPlayer = new Player(playerName, playerRole);
-//            }
-//        });
         JButton statButton = new JButton("stats");
         statButton.setBounds(500, 300, 200, 50);
         statButton.addActionListener(new ActionListener() {
@@ -228,8 +190,10 @@ public class gameGraphics {
         // min is not met.
         weapons.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (mc.checkWeaponRequirementsMet((Weapon)weapons.getSelectedItem())) {
-                    mc.setWeapon((Weapon)weapons.getSelectedItem());
+                Weapon temp = (Weapon) weapons.getSelectedItem();
+                JOptionPane.showMessageDialog(bossFrame, temp.displayReqStats());
+                if (mc.checkWeaponRequirementsMet(temp)) {
+                    mc.setWeapon(temp);
                 }
             }
         });
@@ -244,11 +208,11 @@ public class gameGraphics {
             public void actionPerformed(ActionEvent event) {
                 int totalDamage = mc.playerAttack();
                 currentBoss.setBossCurrentHP(currentBoss.getBossCurrentHP() - totalDamage);
+                JOptionPane.showMessageDialog(bossFrame, "You attacked for " + totalDamage);
                 if (currentBoss.getBossCurrentHP() <= 0) {
                     JOptionPane.showMessageDialog(bossFrame, "Boss has been defeated!");
                     SplittableRandom random = new SplittableRandom();
-                    //if (random.nextInt(Weapon.DROP_CHANCE) == 0) {
-                    if (true == true) { //Testing drops: list works for always true.
+                    if (random.nextInt(Weapon.DROP_CHANCE) == 0) {
                         //Prompt asking if you want to store weapon
                         int input = JOptionPane.showConfirmDialog(bossFrame, "<html>Would you like to store this bosses weapon " + currentBoss.getWeaponHeld().getName() + "?");
                         if (input == 0) {
@@ -262,19 +226,9 @@ public class gameGraphics {
                     else {
                         battleMode();
                     }
-                    //check if player levels up and if so, call new frame, if not just generate new boss
-                    //For now just reload fight adding level up above, could create new battle with below statement or handle in levelUpFrame
-                    //battleMode();
                 }
                 else {
-                    JOptionPane.showMessageDialog(bossFrame, "You attacked for " + totalDamage);
                     currentBossText.setText("<html>Current Boss " + currentBoss.getBossName() + "<br/>Current HP: " + currentBoss.getBossCurrentHP());
-                    //currentPlayerText.setText(playerName + " current health: " + mc.getCurrentHP());
-//                    try {
-//                        TimeUnit.SECONDS.sleep(1);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
                     JOptionPane.showMessageDialog(bossFrame, "Boss has attacked you for " + currentBoss.getBossDamage());
                     mc.setCurrentHP(mc.getCurrentHP() - currentBoss.getBossDamage());
                     currentPlayerText.setText(playerName + " current health: " + mc.getCurrentHP());
@@ -282,8 +236,6 @@ public class gameGraphics {
                         JOptionPane.showMessageDialog(bossFrame, "you have died, teehee");
                     }
                 }
-                //battleMode();
-                //selectRole();
             }
         });
 
@@ -296,26 +248,15 @@ public class gameGraphics {
                     JOptionPane.showMessageDialog(bossFrame, "you have no potions!");
                 } else {
                     JOptionPane.showMessageDialog(bossFrame, "you have drank a potion and been restored to " + mc.getCurrentHP() + " HP");
-//                    try {
-//                        TimeUnit.SECONDS.sleep(1);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
                     JOptionPane.showMessageDialog(bossFrame, "Boss has attacked you for " + currentBoss.getBossDamage());
                     mc.setCurrentHP(mc.getCurrentHP() - currentBoss.getBossDamage());
                     currentPlayerText.setText(playerName + " current health: " + mc.getCurrentHP());
                     if (mc.getCurrentHP() <= 0) {
                         JOptionPane.showMessageDialog(bossFrame,"You have died lol");
                     }
-                    //selectRole();
                 }
             }
         });
-        //text.setBounds(50, 200, 500, 50);
-
-        // adding button in JFrame
-        //roleFrame.add(roleField);
-        //bossFrame.add(bossFrame);
 
         bossFrame.add(attackButton);
         bossFrame.add(potionButton);
@@ -325,9 +266,6 @@ public class gameGraphics {
         bossFrame.add(weapons);
         bossFrame.add(weaponText);
 
-        //roleFrame.add(roleText);
-        // 400 width and 500 height
-        //bossFrame.setSize(500, 600);
 
         // using no layout managers
         bossFrame.setLayout(null);
@@ -349,17 +287,7 @@ public class gameGraphics {
         JLabel levelText = new JLabel("Please select your stat to level  " + playerName);
         levelText.setBounds(50, 200, 500, 50);
         // using buttons instead of text field
-//        JTextField roleField = new JTextField("Please enter your Role");
-//
-//        // x axis, y axis, width, height
-//        roleField.setBounds(150, 300, 220, 50);
-//        //nameField.addActionListener(e -> playerName = nameField.getText());
-//        roleField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(ActionEvent event) {
-//                playerRole = roleField.getText();
-//                Player mainPlayer = new Player(playerName, playerRole);
-//            }
-//        });
+
         JButton strengthButton = new JButton("strength");
         strengthButton.setBounds(50, 300, 200, 50);
         strengthButton.addActionListener(new java.awt.event.ActionListener() {
@@ -399,18 +327,12 @@ public class gameGraphics {
                 System.exit(0);
             }
         });
-        //text.setBounds(50, 200, 500, 50);
-
-        // adding button in JFrame
-        //roleFrame.add(roleField);
         levelFrame.add(levelText);
 
         levelFrame.add(strengthButton);
         levelFrame.add(dexButton);
         levelFrame.add(intelButton);
 
-        //roleFrame.add(roleText);
-        // 400 width and 500 height
         levelFrame.setSize(500, 600);
 
         // using no layout managers

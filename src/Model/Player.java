@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-//NEED TO ADD INTELIGENCE
 
 public class Player {
 
@@ -12,8 +11,8 @@ public class Player {
     private Scanner s = new Scanner(System.in);
 
     private String myName;
-    private ArrayList<Weapon> weaponInventory;
-
+    private ArrayList<Weapon> myWeaponInventory;
+    private ArrayList<Spells> mySpells;
     private int myHP = 100; //added the hp, which is base 100.
     private int myRole;
     private String myRoleS;
@@ -32,7 +31,7 @@ public class Player {
     private int myCurrentHP; //added current hp, which is vitality times base HP
 
     public Player() {
-        weaponInventory = new ArrayList<Weapon>();
+        myWeaponInventory = new ArrayList<Weapon>();
         this.declareName();
         this.declareClass();
         this.generateStats();
@@ -45,23 +44,27 @@ public class Player {
      * @param theRole   The Players role passed in
      */
     public Player(String theName, int theRole) {
-        weaponInventory = new ArrayList<Weapon>();
+        myWeaponInventory = new ArrayList<Weapon>();
+        mySpells = new ArrayList<Spells>(5);
         myName = theName;
+        if (myName.equals("Raiden")) {
+            myWeaponInventory.add(Weapon.murasama);
+        }
         myRole = theRole;
         if (myRole == 1) {
-            weaponInventory.add(Weapon.shortSword);
+            myWeaponInventory.add(Weapon.shortSword);
         }
         if (myRole == 2) {
-            weaponInventory.add(Weapon.staff);
+            myWeaponInventory.add(Weapon.staff);
         }
         if (myRole == 3) {
-            weaponInventory.add(Weapon.longSword);
+            myWeaponInventory.add(Weapon.longSword);
         }
         this.generateStats();
 
     }
     public int numberOfWeaponsStored() {
-        return weaponInventory.size();
+        return myWeaponInventory.size();
     }
     public int updateStrength(int theStrength) {
         myStrength += theStrength;
@@ -82,7 +85,7 @@ public class Player {
         return myXP;
     }
     public void storeWeapon(Weapon theWeapon) {
-        weaponInventory.add(theWeapon);
+        myWeaponInventory.add(theWeapon);
     }
     public boolean checkWeaponRequirementsMet(Weapon theWeapon) {
         if (myStrength >= theWeapon.getMyRequiredSTR() && myDexterity >= theWeapon.getMyRequiredDEX()
@@ -95,7 +98,7 @@ public class Player {
         }
     }
     public Weapon getWeaponAtIndex(int i) {
-        return weaponInventory.get(i);
+        return myWeaponInventory.get(i);
     }
     public int getCurrentHP() {
         return myCurrentHP;
@@ -191,6 +194,8 @@ public class Player {
             myInteligence = rand.nextInt(5);
             myInteligence += 12;
 
+            Spells mageBook = new Spells();
+            mySpells.add(mageBook.mageBook.get(0));
             myCurrentWeapon = Weapon.staff;
         }
 
@@ -414,5 +419,8 @@ public class Player {
             //System.out.println();
             return myCurrentHP;
         }
+    }
+    public void checkForNewSpells() {
+        //if (my)
     }
 }
